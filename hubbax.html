@@ -388,9 +388,9 @@ body{font-size:12px;}
  </div>
  <table>
  <thead>
- <tr><th>Date</th><th>Username</th><th>Phone</th><th>Type</th><th>Amount</th><th>Reference</th><th>Status</th><th>Actions</th></tr>
+ <tr><th>Date</th><th>Username</th><th>Phone</th><th>Type</th><th>Amount</th><th>Reference</th><th>Status</th></tr>
  </thead>
- <tbody id="adm-tx-table-body"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
+ <tbody id="adm-tx-table-body"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
  </table>
  </div>
  </div>
@@ -815,27 +815,33 @@ function startRealtimeListeners() {
 
  // Auto-cleanup: notifications older than 12h, admin transactions older than 10h,
  // and user transaction histories older than 40h
- cleanupOldNotificationsAndTransactions();
- cleanupOldUserTransactionHistories();
+ cleanupOldNotificationsOnly();
  if (cleanupInterval) clearInterval(cleanupInterval);
  cleanupInterval = setInterval(() => {
- cleanupOldNotificationsAndTransactions();
- cleanupOldUserTransactionHistories();
+ cleanupOldNotificationsOnly();
  }, 15 * 60 * 1000); // recheck every 15 min
 }
 
 // ============================================================
-// AUTO-CLEANUP: permanently deletes old adminNotifications (>12h)
-// and adminTransactions (>10h) from the database, not just the UI.
+// AUTO-CLEANUP: permanently deletes old adminNotifications (>12h) only.
+// Transactions (user and admin) are never auto-deleted.
 // Timestamps are extracted from the trailing ms value embedded in
 // each record's key (e.g. notif_1729999999999, adm_wd_1729999999999).
 // ============================================================
+function txTid(key) {
+ key = String(key || '');
+ const m = key.match(/(\d{6,})$/);
+ if (!m) return key.toUpperCase();
+ const tokens = key.replace(/^tx_/, '').split('_'); tokens.pop();
+ const code = ((tokens[0] || '').slice(0, 3) + tokens.slice(1).filter(t => t.length === 1).join('')).toUpperCase();
+ return code + m[1].slice(-8);
+}
 function extractKeyTimestamp(key) {
  const match = key.match(/(\d+)$/);
  return match ? parseInt(match[1]) : null;
 }
 
-async function cleanupOldNotificationsAndTransactions() {
+async function cleanupOldNotificationsOnly() {
  const now = Date.now();
  const NOTIF_MAX_AGE = 12 * 60 * 60 * 1000; // 12 hours
  const TX_MAX_AGE = 10 * 60 * 60 * 1000; // 10 hours
@@ -857,22 +863,8 @@ async function cleanupOldNotificationsAndTransactions() {
  }
  } catch (e) { console.warn('Notification cleanup error:', e); }
 
- try {
- const txSnap = await db.ref('adminTransactions').get();
- if (txSnap.exists()) {
- const txs = txSnap.val();
- const updates = {};
- for (const key of Object.keys(txs)) {
- const ts = extractKeyTimestamp(key);
- if (ts && (now - ts) > TX_MAX_AGE) {
- updates[key] = null;
- }
- }
- if (Object.keys(updates).length) {
- await db.ref('adminTransactions').update(updates);
- }
- }
- } catch (e) { console.warn('Admin transaction cleanup error:', e); }
+// Transactions are never auto-deleted.
+
 }
 
 // ============================================================
@@ -885,30 +877,7 @@ async function cleanupOldNotificationsAndTransactions() {
 // without a parseable timestamp (like the one-time 't0'
 // registration bonus record) are safely skipped, never deleted.
 // ============================================================
-async function cleanupOldUserTransactionHistories() {
- const now = Date.now();
- const USER_TX_MAX_AGE = 40 * 60 * 60 * 1000; // 40 hours
-
- try {
- const usersSnap = await db.ref('users').get();
- if (!usersSnap.exists()) return;
- const users = usersSnap.val();
-
- for (const [userId, userData] of Object.entries(users)) {
- if (!userData || !userData.transactions) continue;
- const updates = {};
- for (const key of Object.keys(userData.transactions)) {
- const ts = extractKeyTimestamp(key);
- if (ts && (now - ts) > USER_TX_MAX_AGE) {
- updates[key] = null;
- }
- }
- if (Object.keys(updates).length) {
- await db.ref('users/' + userId + '/transactions').update(updates);
- }
- }
- } catch (e) { console.warn('User transaction history cleanup error:', e); }
-}
+// Transactions are never auto-deleted (kept intentionally).
 
 function renderDashboard() {
  const users = Object.values(allUsers);
@@ -1163,21 +1132,6 @@ function renderTube() {
 
 function filterTx(type) { txFilter = type; renderTransactions(); }
 
-// NEW: Delete a single transaction
-async function deleteTransaction(username, txKey, txType) {
- const confirmed = await confirmAction('Delete Transaction?', `Delete this ${txType} transaction for ${username}? This cannot be undone.`);
- if (!confirmed) return;
- 
- try {
- // Remove the transaction from the user's transactions node
- await db.ref('users/' + safeKey(username) + '/transactions/' + txKey).remove();
- toast(` ${txType} transaction deleted for ${username}`);
- renderTransactions(); // Refresh the table
- } catch (error) {
- toast('Error deleting transaction', '#D1543F');
- }
-}
-
 function renderTransactions() {
  const tbody = document.getElementById('tx-table-body');
  const countEl = document.getElementById('tx-count');
@@ -1212,7 +1166,6 @@ function renderTransactions() {
  <td class="mono" style="color:${amountColor};">${tx.amount > 0 ? '+' + fmt(tx.amount) : fmt(tx.amount)}</td>
  <td style="font-size:11px;color:var(--muted);max-width:200px;">${tx.note || '—'}</td>
  <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
- <td><button class="btn btn-delete" onclick="deleteTransaction('${tx.username}', '${tx.txKey}', '${tx.type}')">Remove</button></td>
  </tr>`;
  }).join('');
 }
@@ -1233,7 +1186,7 @@ function renderAdminTransactions() {
  }
  
  if (countEl) countEl.textContent = txs.length + ' transactions';
- if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No transactions found<\/tr>'; return; }
+ if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No transactions found<\/tr>'; return; }
  
  tbody.innerHTML = txs.map(tx => {
  let statusColor = 'var(--gold)', statusText = 'Pending';
@@ -1250,21 +1203,8 @@ function renderAdminTransactions() {
  <td class="mono">${amountStr}</td>
  <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
  <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
- <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">Remove</button></td>
  </tr>`;
  }).join('');
-}
-
-async function deleteAdmTx(key) {
- const confirmed = await confirmAction('Delete Transaction?', 'Delete this admin transaction? This cannot be undone.');
- if (!confirmed) return;
- 
- try {
- await db.ref('adminTransactions/' + key).remove();
- toast('Transaction deleted');
- } catch (error) {
- toast('Error deleting transaction', '#D1543F');
- }
 }
 
 function updateWithdrawalsBadge() {
@@ -1305,7 +1245,7 @@ function renderWithdrawalsTable() {
  <button class="btn btn-reject" onclick="rejectWithdrawal('${k}', '${v.userId}', '${v.username}', ${v.amount})">Decline</button>
  ` : '—';
  return `<tr>
- <td class="mono" style="font-size:11px;">${v.date || '—'}</td>
+ <td class="mono" style="font-size:11px;">${v.date || '—'}${v.txKey ? '<br><span style="color:var(--muted);">TID ' + txTid(v.txKey) + '</span>' : ''}</td>
  <td><strong>${v.username || '—'}</strong></td>
  <td class="mono">${v.phone || '—'}${v.phone ? ` <button class="btn" style="padding:2px 8px;font-size:10px;" onclick="copyWdField('${k}','phone')">Copy</button>` : ''}</td>
  <td class="mono" style="color:var(--warn);font-weight:800;">${fmt(v.amount)}</td>
@@ -1767,7 +1707,7 @@ function renderDepositsTable() {
  const left = isOpenDeposit(v) ? `<span class="c-left mono" data-exp="${Number(v.expiresAt) || 0}">--:--</span>` : '<span class="c-left mono">—</span>';
  return `<div class="dep-line">
  <strong class="c-user">${escHtml(v.username || '—')}</strong>
- <span class="c-time mono">${escHtml(time)}</span>
+ <span class="c-time mono">${escHtml(time)}${v.txKey ? '<br><small style="color:var(--muted);">' + escHtml(txTid(v.txKey)) + '</small>' : ''}</span>
  <span class="c-phone mono">${escHtml(localPhone(v.phone))}<button class="btn btn-edit cp" onclick="copyDepField('${k}','phone')">Copy</button></span>
  <span class="c-amt mono"><b style="color:var(--gold);">${fmt(v.totalAmount || v.amount)}</b> <i>(${Number(v.amount || 0).toLocaleString()})</i><button class="btn btn-edit cp" onclick="copyDepField('${k}','total')">Copy</button></span>
  ${left}
