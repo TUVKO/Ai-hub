@@ -143,6 +143,12 @@ select option{background:#fff;color:var(--text);}
 .menu-item.active-menu{background:var(--sand);color:var(--accent);}
 .menu-item-icon{font-size:17.5px;width:28px;}
 .menu-divider{height:1px;background:var(--border);margin:10px 4px;}
+.menu-group-title{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;margin-bottom:2px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
+.menu-group-title:active{background:var(--sand2);}
+.menu-submenu.mg{padding-left:0;}
+.menu-submenu.mg.open{max-height:360px;}
+.menu-exit{display:inline-flex;align-items:center;justify-content:center;margin:16px 14px 24px;padding:8px 26px;border:none;border-radius:10px;background:#B23A2E;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
+.menu-exit:active{transform:scale(.97);background:#9A3026;}
 .menu-logout{margin:12px 14px 22px;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:16px;cursor:pointer;font-size:14px;font-weight:600;background:transparent;color:var(--warn);border:1.5px solid var(--warn);width:calc(100% - 28px);}
 .menu-logout:active{transform:scale(.98);}
 
@@ -1200,17 +1206,22 @@ input,select{font-size:13.5px;}
 <div class="side-menu" id="side-menu">
  <div class="side-menu-header"><span class="side-menu-brand">AI Hub Traders</span><button class="close-menu" onclick="closeMenu()"></button></div>
  <div class="side-menu-items">
- <div class="menu-item active-menu" onclick="menuNav('home')"><span class="menu-item-icon"></span>Home</div>
- <div class="menu-item" onclick="menuNav('deposit')"><span class="menu-item-icon"></span>Add Funds</div>
- <div class="menu-item" onclick="menuNav('withdraw')"><span class="menu-item-icon"></span>Cash Out</div>
- <div class="menu-item" onclick="menuNav('reinvest')"><span class="menu-item-icon"></span>Reinvest</div>
- <div class="menu-item" onclick="menuNav('team')"><span class="menu-item-icon"></span>My Network</div>
- <div class="menu-divider"></div>
- <div class="menu-item" onclick="menuNavHistory('Withdrawal')"><span class="menu-item-icon"></span>Cash Out History</div>
- <div class="menu-item" onclick="menuNavHistory('Deposit')"><span class="menu-item-icon"></span>Deposit History</div>
- <div class="menu-item" onclick="menuNavHistory('Referral')"><span class="menu-item-icon"></span>Invite Rewards</div>
+ <div class="menu-group-title" onclick="toggleMenuGroup('mg-main')"><span>Main Menu</span><span class="menu-chevron open" id="mg-main-chev">&rsaquo;</span></div>
+ <div class="menu-submenu mg open" id="mg-main">
+ <div class="menu-item active-menu" data-nav="home" onclick="menuNav('home')">Home</div>
+ <div class="menu-item" data-nav="deposit" onclick="menuNav('deposit')">Add Funds</div>
+ <div class="menu-item" data-nav="withdraw" onclick="menuNav('withdraw')">Cash Out</div>
+ <div class="menu-item" data-nav="reinvest" onclick="menuNav('reinvest')">Reinvest</div>
+ <div class="menu-item" data-nav="team" onclick="menuNav('team')">My Network</div>
  </div>
- <button class="menu-logout" onclick="doLogout()"><span style="font-size:16.5px"></span>Logout</button>
+ <div class="menu-group-title" onclick="toggleMenuGroup('mg-hist')"><span>History</span><span class="menu-chevron" id="mg-hist-chev">&rsaquo;</span></div>
+ <div class="menu-submenu mg" id="mg-hist">
+ <div class="menu-item" data-nav="h-Withdrawal" onclick="menuNavHistory('Withdrawal')">Cash Out History</div>
+ <div class="menu-item" data-nav="h-Deposit" onclick="menuNavHistory('Deposit')">Deposit History</div>
+ <div class="menu-item" data-nav="h-Referral" onclick="menuNavHistory('Referral')">Invite Rewards</div>
+ </div>
+ <button class="menu-exit" onclick="doLogout()">Exit</button>
+ </div>
 </div>
 
 <!-- MODAL -->
@@ -2137,7 +2148,19 @@ function switchTab(tab) {
  pushNavState({ view: 'dashboard', tab: tab }, tab);
 }
 
-function menuNav(tab) { switchTab(tab); if (tab === 'brief') renderGrowthPlanTable(); }
+function markMenu(key) {
+ document.querySelectorAll('#side-menu .menu-item[data-nav]').forEach(function (el) { el.classList.toggle('active-menu', el.getAttribute('data-nav') === key); });
+}
+function toggleMenuGroup(id) {
+ ['mg-main', 'mg-hist'].forEach(function (g) {
+  const sub = document.getElementById(g), chev = document.getElementById(g + '-chev');
+  if (!sub) return;
+  const open = g === id ? !sub.classList.contains('open') : false;
+  sub.classList.toggle('open', open);
+  if (chev) chev.classList.toggle('open', open);
+ });
+}
+function menuNav(tab) { markMenu(tab); switchTab(tab); if (tab === 'brief') renderGrowthPlanTable(); }
 
 function toggleHistoryMenu() {
  const sub = document.getElementById('history-submenu');
@@ -2149,6 +2172,7 @@ function toggleHistoryMenu() {
 }
 
 function menuNavHistory(filterType) {
+ markMenu('h-' + filterType);
  currentHistoryFilter = filterType;
  const labels = { all: 'All your transactions', Deposit: 'Showing: Deposits', Withdrawal: 'Showing: Withdrawals', Profit: 'Showing: Profits', Bonus: 'Showing: Bonuses', Referral: 'Showing: Referral' };
  const labelEl = document.getElementById('history-filter-label');
