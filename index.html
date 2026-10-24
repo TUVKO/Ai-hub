@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta property="og:title" content="AI Hub Traders — Smart Investment Platform">
-<meta property="og:description" content="Grow your money with 6% daily profit over 50 days. Trusted by thousands. Register free today.">
+<meta property="og:description" content="Grow your money with 6% daily profit over 60 days. Trusted by thousands. Register free today.">
 <meta property="og:image" content="https://tuvko.github.io/Lumina/logo.png?v=2">
 <meta property="og:url" content="https://tuvko.github.io/Lumina/">
 <meta property="og:type" content="website">
@@ -47,6 +47,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{background:#EDE7DB;}
+#star-bg{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:0;pointer-events:none;}
 body{font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.6;background:var(--bg);color:var(--text);min-height:100vh;max-width:500px;margin:0 auto;position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 button{font-family:'Inter',system-ui,sans-serif;}
 
@@ -767,6 +768,7 @@ input,select{font-size:13.5px;}
 </style>
 </head>
 <body>
+<canvas id="star-bg" aria-hidden="true"></canvas>
 
 <!-- LOGIN (Glass style) -->
 <div class="auth-page" id="login-page">
@@ -1032,23 +1034,23 @@ input,select{font-size:13.5px;}
  <th class="c-orange"><span class="ern-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1"/></svg></span><span>Total Profit</span></th>
  </tr></thead>
  <tbody>
- <tr><td>15,000</td><td>900</td><td>60,000</td><td>45,000</td></tr>
- <tr><td>20,000</td><td>1,200</td><td>80,000</td><td>60,000</td></tr>
- <tr><td>30,000</td><td>1,800</td><td>120,000</td><td>90,000</td></tr>
- <tr><td>50,000</td><td>3,000</td><td>200,000</td><td>150,000</td></tr>
- <tr><td>70,000</td><td>4,200</td><td>280,000</td><td>210,000</td></tr>
- <tr><td>100,000</td><td>6,000</td><td>400,000</td><td>300,000</td></tr>
- <tr><td>150,000</td><td>9,000</td><td>600,000</td><td>450,000</td></tr>
- <tr><td>200,000</td><td>12,000</td><td>800,000</td><td>600,000</td></tr>
- <tr><td>300,000</td><td>18,000</td><td>1,200,000</td><td>900,000</td></tr>
- <tr><td>500,000</td><td>30,000</td><td>2,000,000</td><td>1,500,000</td></tr>
- <tr><td>700,000</td><td>42,000</td><td>2,800,000</td><td>2,100,000</td></tr>
- <tr><td>1,000,000</td><td>60,000</td><td>4,000,000</td><td>3,000,000</td></tr>
- <tr><td>1,500,000</td><td>90,000</td><td>6,000,000</td><td>4,500,000</td></tr>
- <tr><td>2,000,000</td><td>120,000</td><td>8,000,000</td><td>6,000,000</td></tr>
- <tr><td>5,000,000</td><td>300,000</td><td>20,000,000</td><td>15,000,000</td></tr>
- <tr><td>10,000,000</td><td>600,000</td><td>40,000,000</td><td>30,000,000</td></tr>
- <tr><td>20,000,000</td><td>1,200,000</td><td>80,000,000</td><td>60,000,000</td></tr>
+ <tr><td>15,000</td><td>900</td><td>69,000</td><td>54,000</td></tr>
+ <tr><td>20,000</td><td>1,200</td><td>92,000</td><td>72,000</td></tr>
+ <tr><td>30,000</td><td>1,800</td><td>138,000</td><td>108,000</td></tr>
+ <tr><td>50,000</td><td>3,000</td><td>230,000</td><td>180,000</td></tr>
+ <tr><td>70,000</td><td>4,200</td><td>322,000</td><td>252,000</td></tr>
+ <tr><td>100,000</td><td>6,000</td><td>460,000</td><td>360,000</td></tr>
+ <tr><td>150,000</td><td>9,000</td><td>690,000</td><td>540,000</td></tr>
+ <tr><td>200,000</td><td>12,000</td><td>920,000</td><td>720,000</td></tr>
+ <tr><td>300,000</td><td>18,000</td><td>1,380,000</td><td>1,080,000</td></tr>
+ <tr><td>500,000</td><td>30,000</td><td>2,300,000</td><td>1,800,000</td></tr>
+ <tr><td>700,000</td><td>42,000</td><td>3,220,000</td><td>2,520,000</td></tr>
+ <tr><td>1,000,000</td><td>60,000</td><td>4,600,000</td><td>3,600,000</td></tr>
+ <tr><td>1,500,000</td><td>90,000</td><td>6,900,000</td><td>5,400,000</td></tr>
+ <tr><td>2,000,000</td><td>120,000</td><td>9,200,000</td><td>7,200,000</td></tr>
+ <tr><td>5,000,000</td><td>300,000</td><td>23,000,000</td><td>18,000,000</td></tr>
+ <tr><td>10,000,000</td><td>600,000</td><td>46,000,000</td><td>36,000,000</td></tr>
+ <tr><td>20,000,000</td><td>1,200,000</td><td>92,000,000</td><td>72,000,000</td></tr>
  </tbody>
  </table>
  </div>
@@ -1162,20 +1164,20 @@ input,select{font-size:13.5px;}
  <p>AI Hub Traders was built on a simple idea: your money should work as hard as you do, every single day, without you having to lift a finger.</p>
  <div class="brief-quote">Your money should work as hard as you do, every single day.</div>
  <p>Here's the journey. The moment you join, we welcome you with a free UGX 3,500 bonus. No deposit required, just our way of saying thank you for trusting us. When you're ready to grow further, you can invest anywhere from UGX 15,000 up to UGX 2,350,000, and the instant you do, you receive 6% of that amount back immediately as a welcome profit, before the real magic even begins.</p>
- <p>From there, your investment goes to work quietly in the background. Every day, for 50 days, 6% of your active stake is added straight to your balance, automatically and reliably. By the end of the full cycle, an investment can return up to 300% of what you put in. No charts to watch, no manual claiming, no stress. Just steady, compounding growth happening for you around the clock.</p>
+ <p>From there, your investment goes to work quietly in the background. Every day, for 60 days, 6% of your active stake is added straight to your balance, automatically and reliably. By the end of the full cycle, an investment can return up to 360% of what you put in. No charts to watch, no manual claiming, no stress. Just steady, compounding growth happening for you around the clock.</p>
  <p>And it doesn't stop there. AI Hub Traders also believes in the power of community. Share your referral link with friends and family, and you'll earn 10% from anyone you personally bring in, 3% from their referrals, and 1% from the level after that. Three layers deep, rewarding you for building a network, not just for going it alone.</p>
  <p>When you're ready to enjoy your earnings, cashing out is simple and fast, sent directly to your mobile money. A small 10% service charge keeps the platform running smoothly for everyone.</p>
  <p>Whether you're investing UGX 10,000 or UGX 100 million, the promise is the same: consistency, transparency, and a little bit of extra love in your pocket every single day. Welcome to AI Hub Traders, where patience truly pays.</p>
 
  <div class="brief-plan">
- <div class="brief-plan-head">Growth plan: 6% daily for 50 days, 300% total return</div>
+ <div class="brief-plan-head">Growth plan: 6% daily for 60 days, 360% total return</div>
  <div style="overflow-x:auto;">
  <table>
  <thead>
  <tr>
  <th>Deposit (UGX)</th>
  <th>Daily profit (6%)</th>
- <th>50-day total (UGX)</th>
+ <th>60-day total (UGX)</th>
  </tr>
  </thead>
  <tbody id="growth-plan-table-body"></tbody>
@@ -1548,9 +1550,9 @@ function countryPrefix(c) { return countryInfo(c).prefix; }
 let profitInterval = null;
 let userListener = null;
 
-// Investment cycle length. New investments run 50 days; investments that were
+// Investment cycle length. New investments run 60 days; investments that were
 // already running (no cycleDays saved on them) keep their original 80 days.
-const CYCLE_DAYS_NEW = 50;
+const CYCLE_DAYS_NEW = 60;
 const CYCLE_DAYS_LEGACY = 80;
 function cycleDaysOf(ai) { return (ai && ai.cycleDays) ? ai.cycleDays : CYCLE_DAYS_LEGACY; }
 
@@ -1799,10 +1801,10 @@ function copyRef() {
 function shareRefLink() {
  const url = document.getElementById('ref-url-new');
  const link = url && url.value ? url.value : '';
- const waGroupLink = settingsData.waGroup || '';
- const message = "*New just launched*\n*AI Hub Traders is live*\nRegister using my link below to get your welcome bonus of UGX 3500\n\nHow it works?\nEarn 6% daily profits on your investment.\n\nMinimum investment is UGX 15000\n\nMinimum withdrawal UGX 5000\n\n6% daily for 50 days\n\n" + link + "\n\nWhatsApp channel:\n" + waGroupLink + "\n\nRegister i will guide you.";
- const waUrl = 'https://wa.me/?text=' + encodeURIComponent(message);
- window.open(waUrl, '_blank');
+ if (!link) return;
+ const waUrl = 'https://wa.me/?text=' + encodeURIComponent(buildReferralMessage(link));
+ const w = window.open(waUrl, '_blank');
+ if (!w) window.location.href = waUrl;
 }
 
 // ============================================================
@@ -1834,21 +1836,25 @@ function copyRefHome() {
 
 // Referral message shared on WhatsApp (minimums are read from the current Settings)
 function buildReferralMessage(link) {
-  const minW = Number(settingsData.minWithdraw) || 10000;
-  const minD = Number(settingsData.minDeposit) || 15000;
-  return '*New New New* 🔥\n' + link + '\n\n' +
-    '*AI Hub Traders is now live!*\n' +
-    'Register with my link and receive a *UGX 3,500 welcome bonus* 🎁\n' +
-    '👉 ' + link + '\n\n' +
-    'Why join?\n\n' +
-    '✅ UGX 3,500 welcome bonus\n\n' +
-    '✅ Minimum withdrawal ' + minW + '\n\n' +
-    '✅ Daily profit for 50 days each investment\n\n' +
-    '✅ Minimum invest/deposit ' + minD + '\n\n' +
-    '✅ Earn *6% daily*\n\n' +
-    'Join today and start growing your money 💰\n' +
-    link + '\n\n' +
-    "Join now let's make money 💰 🤑 🤣🥰";
+  const nf = function (v) { return Number(v).toLocaleString('en-US'); };
+  const minW = nf(Number(settingsData.minWithdraw) || 10000);
+  const minD = nf(Number(settingsData.minDeposit) || 15000);
+  const charge = Number(settingsData.withdrawCharge);
+  const chargeTxt = (isNaN(charge) ? 10 : charge);
+  const wa = (settingsData.waGroup || '').trim();
+  let m = '*New launched on 24th* \uD83D\uDE80\n' +
+    'Register with my link and get a *UGX 3,500 welcome bonus* \uD83C\uDF81\n' +
+    '\uD83D\uDC49 ' + link + '\n\n' +
+    'Why join?\n' +
+    '\u2705 UGX 3,500 welcome bonus\n' +
+    '\u2705 Earn *6% daily* for ' + CYCLE_DAYS_NEW + ' days on each investment\n' +
+    '\u2705 Minimum deposit UGX ' + minD + '\n' +
+    '\u2705 Minimum cash out UGX ' + minW + '\n' +
+    '\u2705 Withdrawal charge ' + chargeTxt + '%\n' +
+    link + '\n\n';
+  if (wa) m += 'Join our WhatsApp group for updates and support \uD83D\uDC47\n' + wa + '\n\n';
+  m += 'Register now and start growing your money \uD83D\uDCB0';
+  return m;
 }
 
 // Opens WhatsApp directly with the message filled in (no system share sheet)
@@ -2121,7 +2127,7 @@ function buildGrowthPlanRows() {
  ];
  return tiers.map((deposit, i) => {
  const daily = Math.round(deposit * 0.06);
- const total = daily * 50;
+ const total = daily * 60;
  const rowBg = i % 2 === 0 ? '#FFFFFF' : '#FAF7F2';
  return `<tr style="background:${rowBg};border-top:1px solid #E5DFD4;">
  <td style="padding:11px 14px;color:#231E19;font-weight:600;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:left;">${fmt(deposit).replace('UGX ', '')}</td>
@@ -3499,6 +3505,62 @@ window.addEventListener('popstate', (e) => {
 });
 
 initApp();
+
+// ============================================================
+// Snake-moving star background (tiny star rows, behind the app)
+// ============================================================
+(function () {
+ const cv = document.getElementById('star-bg');
+ if (!cv || !cv.getContext) return;
+ const ctx = cv.getContext('2d');
+ const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const ROW_GAP = 15, STAR_GAP = 8;
+ let W = 0, H = 0, dpr = 1, rows = 0, raf = 0, last = 0;
+ function size() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  rows = Math.ceil(H / ROW_GAP) + 2;
+ }
+ function draw(t) {
+  ctx.clearRect(0, 0, W, H);
+  const cols = Math.ceil(W / STAR_GAP) + 2;
+  const k = 2 * Math.PI / 190;
+  for (let i = 0; i < rows; i++) {
+   const dir = i % 2 ? -1 : 1;
+   const speed = 14 + (i % 5) * 3;
+   const baseY = i * ROW_GAP;
+   const phase = i * 0.55;
+   const shift = (t * speed * dir) % STAR_GAP;
+   for (let j = -1; j < cols; j++) {
+    const x = j * STAR_GAP + shift;
+    const body = 0.6 + 0.4 * Math.sin(x * k * 0.5 - t * 0.9 * dir + i * 0.3);
+    const y = baseY + Math.sin(x * k + phase - t * 1.6 * dir) * 5.5 * body;
+    const h = (i * 31 + j * 17) % 11;
+    const tw = 0.55 + 0.45 * Math.sin(t * 1.8 + h);
+    const terra = h === 0;
+    ctx.globalAlpha = (terra ? 0.34 : 0.22 + (h % 3) * 0.08) * tw;
+    ctx.fillStyle = terra ? '#C25B3A' : '#C9A25A';
+    const sz = (h % 4 === 1) ? 2.6 : 1.8;
+    ctx.fillRect(x, y, sz, sz);
+   }
+  }
+  ctx.globalAlpha = 1;
+ }
+ function loop(ts) {
+  raf = requestAnimationFrame(loop);
+  if (ts - last < 33) return;
+  last = ts;
+  draw(ts / 1000);
+ }
+ function start() { if (!raf && !reduce) raf = requestAnimationFrame(loop); }
+ function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+ size(); draw(0);
+ window.addEventListener('resize', function () { size(); draw(last / 1000); });
+ document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+ start();
+})();
 </script>
 </body>
 </html>
