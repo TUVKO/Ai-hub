@@ -1612,7 +1612,7 @@ async function lockWithdrawals(lock) {
 // MANUAL DEPOSITS - Deposit Mode, Chipper link, DEPOSIT_REQUESTS
 // ============================================================
 const MD_WAIT_MS = 10 * 60 * 1000;
-const CYCLE_DAYS_NEW = 50;
+const CYCLE_DAYS_NEW = 60;
 const CYCLE_DAYS_LEGACY = 80;
 function cycleDaysOf(ai) { return (ai && ai.cycleDays) ? ai.cycleDays : CYCLE_DAYS_LEGACY; }
 function getDateKey(d) {
