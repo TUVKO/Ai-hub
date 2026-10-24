@@ -222,6 +222,10 @@ select option{background:#fff;color:var(--text);}
 /* Floating support icon */
 .whatsapp-float{position:fixed;bottom:104px;right:max(16px,calc(50% - 234px));width:50px;height:50px;background:var(--forest);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(47,79,62,.35);z-index:300;transition:transform .2s;color:#fff;text-decoration:none;}
 .whatsapp-float:hover{transform:scale(1.06);}
+.whatsapp-float{background:#25C45A !important;box-shadow:0 8px 22px rgba(37,196,90,.45) !important;}
+.whatsapp-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #25C45A;animation:supportRing 2s ease-out infinite;pointer-events:none;}
+@keyframes supportRing{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.6);opacity:0;}}
+@media (prefers-reduced-motion:reduce){.whatsapp-float::after{animation:none;opacity:0;}}
 
 /* Investment card */
 .investment-card{background:transparent;border:none;padding:0;margin-bottom:16px;}
@@ -763,7 +767,7 @@ input,select{font-size:13.5px;}
 .rf-tile svg{width:13px;height:13px;}
 .rf-tile b{display:block;margin-top:6px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text);}
 .rf-tile.green b{color:var(--forest);}
-.rf-level .ref-level-body{display:none;border-top:1px solid var(--border);margin-top:12px;padding:0 2px 4px;}
+.rf-level .ref-level-body{display:block;border-top:1px solid var(--border);margin-top:12px;padding:0 2px 4px;}
 .rf-level.open .ref-level-body{display:block;}
 </style>
 </head>
@@ -2601,7 +2605,7 @@ function renderTeam() {
  ? '<div class="ref-members-list">' + rows + '</div>'
  : '<div class="ref-level-empty">No one here yet. Share your link to get started.</div>';
  return '<div class="rf-level ' + mt.cls + '" id="ref-level-' + lv + '">' +
- '<div class="rf-level-head" onclick="toggleRefLevel(' + lv + ')">' +
+ '<div class="rf-level-head" style="cursor:default;">' +
  '<span class="rf-lv-ic">' + svg(mt.icon) + '</span>' +
  '<div class="rf-lv-title"><div class="rf-lv-line"><b>Level ' + lv + '</b><i class="rf-tag">' + mt.tag + '</i></div><span>' + mt.desc + ' · ' + rate + '% Bonus</span></div>' +
  '<div class="rf-lv-count"><b>' + list.length + '</b><span>Members</span></div>' +
