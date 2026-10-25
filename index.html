@@ -225,6 +225,10 @@ select option{background:#fff;color:var(--text);}
 /* Floating support icon */
 .whatsapp-float{position:fixed;bottom:104px;right:max(16px,calc(50% - 234px));width:50px;height:50px;background:var(--forest);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(47,79,62,.35);z-index:300;transition:transform .2s;color:#fff;text-decoration:none;}
 .whatsapp-float:hover{transform:scale(1.06);}
+.wa-channel-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:46px;border:none;border-radius:14px;background:#25D366;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(37,211,102,.3);}
+.wa-channel-btn:active{transform:scale(.98);background:#1FBE5C;}
+.wa-channel-btn svg{width:20px;height:20px;}
+#wa-channel-sec{margin-top:-4px;}
 .whatsapp-float{background:#25C45A !important;box-shadow:0 8px 22px rgba(37,196,90,.45) !important;}
 .whatsapp-float::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #25C45A;animation:supportRing 2s ease-out infinite;pointer-events:none;}
 @keyframes supportRing{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.6);opacity:0;}}
@@ -825,11 +829,6 @@ input,select{font-size:13.5px;}
  <div class="auth-subtitle">Complete the form below to get started</div>
  <div id="reg-referrer-display"></div>
  <div class="field-group">
- <label class="field-label">Full name <span class="req">*</span></label>
- <div class="field-wrap"><span class="field-icon"></span><input type="text" id="reg-fullname" placeholder="Enter your full name" autocomplete="name"></div>
- <div class="field-error" id="reg-name-err">Enter your full name</div>
- </div>
- <div class="field-group">
  <label class="field-label">Username <span class="req">*</span></label>
  <div class="field-wrap"><span class="field-icon"></span><input type="text" id="reg-username" placeholder="Choose a username"></div>
  <div class="field-error" id="reg-user-err">Username is required</div>
@@ -866,12 +865,6 @@ input,select{font-size:13.5px;}
  <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:11px;"></div>
  <button class="submit-btn" onclick="doRegister()">Create Account</button>
  <div class="auth-switch">Already registered? <a onclick="showAuth('login-page')">Log In</a></div>
- <div class="auth-join">Join our community
- <div class="auth-join-row">
- <button class="auth-join-btn" onclick="openWaGroup()">WhatsApp</button>
- <button class="auth-join-btn" onclick="openTelegramGroup()">Telegram</button>
- </div>
- </div>
  </div>
 </div>
 
@@ -924,6 +917,10 @@ input,select{font-size:13.5px;}
  <button class="action-btn action-btn-records" onclick="switchTab('history')"><span class="act-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</span><span class="act-chev">›</span></button>
  <button class="action-btn action-btn-referrals" onclick="switchTab('team')"><span class="act-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M17 5.5a3 3 0 010 5.5M19 14.8c1.7.8 2.8 2.4 3 5.2"/></svg>Invite Friends</span><span class="act-chev">›</span></button>
  </div>
+ </div>
+
+ <div class="section" id="wa-channel-sec" style="display:none;">
+ <button class="wa-channel-btn" onclick="openWaChannel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.6A8.5 8.5 0 1 1 8 19.6L3 21z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1.2-1.4-2.3-1.2-.9.8c-1-.4-1.9-1.3-2.3-2.3l.8-.9-1.2-2.3L9 8.5z"/></svg>Join our WhatsApp Channel</button>
  </div>
 
  <div class="section">
@@ -1541,7 +1538,7 @@ function openChangeAvatar() {
 let currentUsername = null;
 let settingsData = {
  uraTax: 4, withdrawCharge: 10, refL1: 10, refL2: 3, refL3: 1,
- waGroup: '', waSupport: '', telegramGroup: '', withdrawLocked: false, withdrawApproval: false, depositManual: false,
+ waGroup: '', waChannel: '', waSupport: '', telegramGroup: '', withdrawLocked: false, withdrawApproval: false, depositManual: false,
  minDeposit: 15000, maxDeposit: 2350000, minWithdraw: 10000, waNumber: '', marzApiKey: ''
 };
 const WELCOME_BONUS = 3500;
@@ -1993,6 +1990,13 @@ try { taInit(); } catch (err) { console.warn('Top assets init error:', err); }
 function openTelegramGroup() {
  if (settingsData.telegramGroup) window.open(settingsData.telegramGroup, '_blank');
 }
+function openWaChannel() {
+ if (settingsData.waChannel) window.open(settingsData.waChannel, '_blank');
+}
+function updateWaChannelButton() {
+ const sec = document.getElementById('wa-channel-sec');
+ if (sec) sec.style.display = (settingsData.waChannel && String(settingsData.waChannel).trim()) ? 'block' : 'none';
+}
 function openWaGroup() {
  if (settingsData.waGroup) window.open(settingsData.waGroup, '_blank');
  // No modal - just silent fail
@@ -2204,6 +2208,7 @@ function startSettingsListener() {
 
 function updateUIWithSettings() {
  updateDepositModeUI();
+ updateWaChannelButton();
  const minWith = settingsData.minWithdraw || 10000;
  const withMinDisplay = document.getElementById('with-min-display');
  if (withMinDisplay) withMinDisplay.textContent = fmt(minWith);
@@ -3372,17 +3377,15 @@ async function doLogin() {
 }
 
 async function doRegister() {
- clearErrors('reg-name-err', 'reg-user-err', 'reg-email-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-general-err');
- const fullName = document.getElementById('reg-fullname').value.trim().replace(/\s+/g, ' ');
- const username = document.getElementById('reg-username').value.trim();
+ clearErrors('reg-user-err', 'reg-email-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-general-err');
+  const username = document.getElementById('reg-username').value.trim();
  const email = document.getElementById('reg-email').value.trim().toLowerCase();
  const country = document.getElementById('reg-country').value;
  const info = countryInfo(country);
  const phoneDigits = document.getElementById('reg-phone').value.trim();
  const password = document.getElementById('reg-password').value;
  let ok = true;
- if (fullName.length < 3) { setErr('reg-name-err', true, 'Enter your full name'); ok = false; }
- if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
+  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setErr('reg-email-err', true, 'Enter a valid email address'); ok = false; }
  if (!COUNTRIES[country]) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
  if (!phoneDigits || phoneDigits.length !== info.len || !phoneDigits.startsWith('0')) { setErr('reg-phone-err', true, 'Enter ' + info.len + ' digits starting with 0'); ok = false; }
@@ -3396,7 +3399,7 @@ async function doRegister() {
  const now = dateStr();
  const todayKey = getDateKey(new Date());
  const newUser = {
- fullName, username, email, password, country, phone: fullPhone, stake: 0, balance: WELCOME_BONUS, withdrawn: 0, refEarned: 0,
+ username, email, password, country, phone: fullPhone, stake: 0, balance: WELCOME_BONUS, withdrawn: 0, refEarned: 0,
  activated: false, locked: false, referredBy: refCode, joinedDate: new Date().getFullYear().toString(),
  lastProfitDate: todayKey, avatar: null,
  transactions: { t0: { type: 'Bonus', amount: WELCOME_BONUS, note: 'Registration Bonus ', date: now, status: 'completed' } },
@@ -3427,8 +3430,7 @@ async function doRegister() {
  currentUser = newUser;
  currentUsername = username;
  localStorage.setItem('pp_current_user', username);
- document.getElementById('reg-fullname').value = '';
- document.getElementById('reg-username').value = '';
+  document.getElementById('reg-username').value = '';
  document.getElementById('reg-email').value = '';
  document.getElementById('reg-phone').value = '';
  document.getElementById('reg-password').value = '';
